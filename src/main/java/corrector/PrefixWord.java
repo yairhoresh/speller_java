@@ -2,19 +2,19 @@ package corrector;
 
 public class PrefixWord {
 	private String prefix;
-	private Attribute wordAttribute;
+	private Attribute attribute;
 
-	public PrefixWord(String prefix, Attribute wordAttribute) {
+	public PrefixWord(String prefix, Attribute attribute) {
 		this.prefix = prefix;
-		this.wordAttribute = wordAttribute;
+		this.attribute = attribute;
 	}
 
 	public String getPrefix() {
 		return prefix;
 	}
 
-	public Attribute getWordAttribute() {
-		return wordAttribute;
+	public Attribute getAttribute() {
+		return attribute;
 	}
 
 	

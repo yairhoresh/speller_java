@@ -6,10 +6,10 @@ import java.util.Map;
 import java.util.Set;
 
 public class WordPotentialMeanings {
-	
+
 	private String originalWord;
-	private Set<String> prefixes;
-	private Map<String, List<Attribute>> wordToAttributes;
+	final private Set<String> prefixes;
+	final private Map<String, List<Attribute>> wordToAttributes;
 	private List<PrefixWord> listOfPotentialInstances = new ArrayList<>();
 	// Map<WordAttribute, String> attributeToWord = new HashMap<>();
 	
@@ -24,7 +24,7 @@ public class WordPotentialMeanings {
 	private void addWord(String originalWord) {
 		
 		this.originalWord = originalWord;
-		addPotentials("", originalWord);
+		addPotentials(originalWord, null);
 		
 		// break it 
 		for (String prefix : prefixes) {
@@ -39,16 +39,18 @@ public class WordPotentialMeanings {
 	private void addPotentials(String prefix, String word) {
 
 		// add direct instances
-		PrefixWord prefixWord = new PrefixWord(prefix, new Attribute(-1, word));
-		listOfPotentialInstances.add(prefixWord);
+		if (word == null) {
+			PrefixWord prefixWord = new PrefixWord(prefix, new Attribute(-1, null, null));
+			listOfPotentialInstances.add(prefixWord);
+			return;
+		}
 
 		// add instances of word attribute
 		List<Attribute> listOfAttributes = wordToAttributes.get(word);
 		if (listOfAttributes == null)
 			return;
 		for (Attribute wordAttribute : listOfAttributes) {
-			
-			prefixWord = new PrefixWord(prefix, wordAttribute);
+			PrefixWord prefixWord = new PrefixWord(prefix, wordAttribute);
 			listOfPotentialInstances.add(prefixWord);
 		}
 	}
