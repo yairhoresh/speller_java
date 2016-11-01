@@ -74,13 +74,13 @@ public class Rule {
 	}
 
 	
-	public List<Range> getMatches(List<WordPotentialMeanings> inputTextinFullWordForm) {
+	public List<Range> getMatches(List<WordPotentialMeanings> inputTextInFullWordForm) {
 		
 		List<Range> matches = new ArrayList<>();
 		
 		// go over the instances
 		for (RuleInstance ruleInstance : ruleIntances) {
-			matches.addAll(ruleInstance.getMatches(inputTextinFullWordForm));
+			matches.addAll(ruleInstance.getMatches(inputTextInFullWordForm));
 		}
 		
 		

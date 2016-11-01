@@ -56,7 +56,7 @@ public class RuleInstance {
 	}
 
 	
-	public List<Range> getMatches(List<String> inputTextInFullWordForm) {
+	public List<Range> getMatches(List<WordPotentialMeanings> inputTextInFullWordForm) {
 		
 		List<Range> matches = new ArrayList<>();
 				
@@ -73,13 +73,13 @@ public class RuleInstance {
 	}
 	
 	
-	private int exactMatchIndex(List<String> inputTextInFullWordForm, int startingIndex) {
+	private int exactMatchIndex(List<WordPotentialMeanings> inputTextInFullWordForm, int startingIndex) {
 		
 		int textIndex = startingIndex;
 
 		for (PrefixWord ruleToken : wrongRuleTokens) {
-			
-			String oneWordFromText = inputTextInFullWordForm.get(textIndex);
+
+			WordPotentialMeanings oneWordFromText = inputTextInFullWordForm.get(textIndex);
 						
 			String matchResult = matchType(oneWordFromText, ruleToken, state, prefixOffset);
 			
@@ -108,7 +108,7 @@ public class RuleInstance {
 
 
 
-	private String matchType(String oneWordFromText, PrefixWord ruleToken, String state, int prefixOffset) {
+	private String matchType(WordPotentialMeanings oneWordFromText, PrefixWord ruleToken, String state, int prefixOffset) {
 
 		String ruleTokenType = "XXXX";
 		String ruleTokenValue = "XXXX";
