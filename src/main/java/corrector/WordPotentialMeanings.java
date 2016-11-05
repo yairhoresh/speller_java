@@ -10,6 +10,7 @@ public class WordPotentialMeanings {
 	private String originalWord;
 	final private Set<String> prefixes;
 	final private Map<String, List<Attribute>> wordToAttributes;
+
 	private List<PrefixWord> listOfPotentialInstances = new ArrayList<>();
 	// Map<WordAttribute, String> attributeToWord = new HashMap<>();
 	

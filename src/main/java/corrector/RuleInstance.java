@@ -12,13 +12,13 @@ public class RuleInstance {
 		
 	private String wrongTextString;
 	private String correctTextString;
+	private List<PrefixWord> prefixWordListWrongRule;
+
+	private Map<Range, Range> correctionTable = new HashMap<>();
 	private List<Integer> wrongFormMatchingIndices = new ArrayList<>();
 	private List<Integer> correctFormMatchingIndices = new ArrayList<>();
-
-	private List<PrefixWord> wrongRuleTokens;
-	private Map<Range, Range> correctionTable = new HashMap<>();
 			
-	public RuleInstance(Map<Attribute,String> attributeToWord, String wrongTextString, String correctTextString) {
+	public RuleInstance(final Map<Attribute,String> attributeToWord, final String wrongTextString, final String correctTextString) {
 		
 		this.wrongTextString = wrongTextString;
 		this.correctTextString = correctTextString;
@@ -30,13 +30,13 @@ public class RuleInstance {
 	
 	private void compile(Map<Attribute,String> attributeToWord) {
 		
-		wrongRuleTokens = fromStringToTokens(attributeToWord, wrongTextString);
-		List<PrefixWord> correctRuleTokens = fromStringToTokens(attributeToWord, correctTextString);
+		prefixWordListWrongRule = fromStringToPrefixWordList(attributeToWord, wrongTextString);
+		List<PrefixWord> prefixWordListCorrectRule = fromStringToPrefixWordList(attributeToWord, correctTextString);
 		
-		correctionTable.put(new Range(0, wrongRuleTokens.size()), new Range(0, correctRuleTokens.size()));
+		correctionTable.put(new Range(0, prefixWordListWrongRule.size()), new Range(0, prefixWordListCorrectRule.size()));
 		// TODO: build a fine matcher
 		/*
-		lcs(wrongRuleTokens, correctRuleTokens);
+		lcs(prefixWordListWrongRule, correctRuleTokens);
 		
 		// build correction table
 		// go over the matching indices, whatever is not matched enters the correction table
@@ -62,7 +62,7 @@ public class RuleInstance {
 				
 		// go over the text
 		// TODO: inexact pattern matching
-		for (int i = 0; i <= inputTextInFullWordForm.size() - wrongRuleTokens.size(); i++) {
+		for (int i = 0; i <= inputTextInFullWordForm.size() - prefixWordListWrongRule.size(); i++) {
 			
 			int endMatchIndex = exactMatchIndex(inputTextInFullWordForm, i);
 			if (endMatchIndex != -1)
@@ -77,11 +77,11 @@ public class RuleInstance {
 		
 		int textIndex = startingIndex;
 
-		for (PrefixWord ruleToken : wrongRuleTokens) {
+		for (PrefixWord ruleToken : prefixWordListWrongRule) {
 
-			WordPotentialMeanings oneWordFromText = inputTextInFullWordForm.get(textIndex);
+			WordPotentialMeanings prefixWordFromText = inputTextInFullWordForm.get(textIndex);
 						
-			String matchResult = matchType(oneWordFromText, ruleToken, state, prefixOffset);
+			String matchResult = matchType(prefixWordFromText, ruleToken, state, prefixOffset);
 			
 			if (matchResult == null) 
 				return -1; 
@@ -162,32 +162,28 @@ public class RuleInstance {
 	}
 
 	
-	private List<PrefixWord> fromStringToTokens(Map<Attribute, String> attributeToWord, String ruleString) {
+	private List<PrefixWord> fromStringToPrefixWordList(final Map<Attribute, String> attributeToWord, String ruleString) {
 
-		List<PrefixWord> listOfTokens = new ArrayList<>();
+		List<PrefixWord> prefixWordList = new ArrayList<>();
 		
 		//ruleString = ruleString.replaceAll("\\+", " \\+");
 		//ruleString = ruleString.replaceAll("_", "_ ");
-		String[] tokens = ruleString.split(" ");
+		String[] words = ruleString.split(" ");
 		
-		for (String token : tokens) {
+		for (String word : words) {
 
 			String prefix = "";
 			String body = "";
-			String suffix = "";
-						
-			int endOfPrefix = token.indexOf('_');
-			if (endOfPrefix != -1)
-				prefix = token.substring(0, endOfPrefix);
-			
-			int startOfSuffix = token.indexOf('+');
-			if (startOfSuffix != -1) 
-				suffix = token.substring(startOfSuffix);
 
-			body = token.substring(prefix.length(), token.length() - suffix.length());
+			int endOfPrefix = word.indexOf('_');
+			if (endOfPrefix != -1)
+				prefix = word.substring(0, endOfPrefix);
+			
+
+			body = word.substring(prefix.length(), word.length());
 			
 			if (body.startsWith("[")) {
-				String bodyNoBrackets  = token.substring(1, token.length() - 1);
+				String bodyNoBrackets  = word.substring(1, word.length() - 1);
 				if (attributeToWord.get(bodyNoBrackets) == null) {
 					System.out.println("ERROR, attribute not found:" + body);
 					//System.exit(0);
@@ -195,10 +191,10 @@ public class RuleInstance {
 				}
 			}
 			
-			listOfTokens.add(new PrefixWord(prefix, new Attribute(-1 ,"XXXXXX"), suffix));
+			prefixWordList.add(new PrefixWord(prefix, new Attribute(-1 ,"XXXXXX")));
 		}
 		
-		return listOfTokens;
+		return prefixWordList;
 	}
 }
 
