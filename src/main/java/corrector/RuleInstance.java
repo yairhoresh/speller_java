@@ -12,7 +12,7 @@ public class RuleInstance {
 		
 	private String wrongTextString;
 	private String correctTextString;
-	private List<PrefixWord> prefixWordListWrongRule;
+	private List<PrefixWordSuffix> prefixWordListWrongRule;
 
 	private Map<Range, Range> correctionTable = new HashMap<>();
 	private List<Integer> wrongFormMatchingIndices = new ArrayList<>();
@@ -31,7 +31,7 @@ public class RuleInstance {
 	private void compile(Map<Attribute,String> attributeToWord) {
 		
 		prefixWordListWrongRule = fromStringToPrefixWordList(attributeToWord, wrongTextString);
-		List<PrefixWord> prefixWordListCorrectRule = fromStringToPrefixWordList(attributeToWord, correctTextString);
+		List<PrefixWordSuffix> prefixWordListCorrectRule = fromStringToPrefixWordList(attributeToWord, correctTextString);
 		
 		correctionTable.put(new Range(0, prefixWordListWrongRule.size()), new Range(0, prefixWordListCorrectRule.size()));
 		// TODO: build a fine matcher
@@ -77,7 +77,7 @@ public class RuleInstance {
 		
 		int textIndex = startingIndex;
 
-		for (PrefixWord ruleToken : prefixWordListWrongRule) {
+		for (PrefixWordSuffix ruleToken : prefixWordListWrongRule) {
 
 			WordPotentialMeanings prefixWordFromText = inputTextInFullWordForm.get(textIndex);
 						
@@ -108,7 +108,7 @@ public class RuleInstance {
 
 
 
-	private String matchType(WordPotentialMeanings oneWordFromText, PrefixWord ruleToken, String state, int prefixOffset) {
+	private String matchType(WordPotentialMeanings oneWordFromText, PrefixWordSuffix ruleToken, String state, int prefixOffset) {
 
 		String ruleTokenType = "XXXX";
 		String ruleTokenValue = "XXXX";
@@ -118,7 +118,7 @@ public class RuleInstance {
 		//	return "full word match";
 
 		// go over potential instances
-		for (PrefixWord oneWordFromTextInstance : oneWordFromText.getListOfPotentialInstances()) {
+		for (PrefixWordSuffix oneWordFromTextInstance : oneWordFromText.getListOfPotentialInstances()) {
 			
 			if (ruleTokenType.equals("prefix") && state.equals("body")) 
 				return null;
@@ -162,9 +162,9 @@ public class RuleInstance {
 	}
 
 	
-	private List<PrefixWord> fromStringToPrefixWordList(final Map<Attribute, String> attributeToWord, String ruleString) {
+	private List<PrefixWordSuffix> fromStringToPrefixWordList(final Map<Attribute, String> attributeToWord, String ruleString) {
 
-		List<PrefixWord> prefixWordList = new ArrayList<>();
+		List<PrefixWordSuffix> prefixWordList = new ArrayList<>();
 		
 		//ruleString = ruleString.replaceAll("\\+", " \\+");
 		//ruleString = ruleString.replaceAll("_", "_ ");
@@ -191,7 +191,7 @@ public class RuleInstance {
 				}
 			}
 			
-			prefixWordList.add(new PrefixWord(prefix, new Attribute(-1 ,"XXXXXX")));
+			prefixWordList.add(new PrefixWordSuffix(prefix, new Attribute(-1 ,"XXXXXX")));
 		}
 		
 		return prefixWordList;

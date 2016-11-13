@@ -11,7 +11,7 @@ public class WordPotentialMeanings {
 	final private Set<String> prefixes;
 	final private Map<String, List<Attribute>> wordToAttributes;
 
-	private List<PrefixWord> listOfPotentialInstances = new ArrayList<>();
+	private List<PrefixWordSuffix> listOfPotentialInstances = new ArrayList<>();
 	// Map<WordAttribute, String> attributeToWord = new HashMap<>();
 	
 	
@@ -41,7 +41,7 @@ public class WordPotentialMeanings {
 
 		// add direct instances
 		if (word == null) {
-			PrefixWord prefixWord = new PrefixWord(prefix, new Attribute(-1, null, null));
+			PrefixWordSuffix prefixWord = new PrefixWordSuffix(prefix, new Attribute(-1, null, null));
 			listOfPotentialInstances.add(prefixWord);
 			return;
 		}
@@ -51,7 +51,7 @@ public class WordPotentialMeanings {
 		if (listOfAttributes == null)
 			return;
 		for (Attribute wordAttribute : listOfAttributes) {
-			PrefixWord prefixWord = new PrefixWord(prefix, wordAttribute);
+			PrefixWordSuffix prefixWord = new PrefixWordSuffix(prefix, wordAttribute);
 			listOfPotentialInstances.add(prefixWord);
 		}
 	}
@@ -62,7 +62,7 @@ public class WordPotentialMeanings {
 	}
 
 	
-	public List<PrefixWord> getListOfPotentialInstances() {
+	public List<PrefixWordSuffix> getListOfPotentialInstances() {
 		return listOfPotentialInstances;
 	}
 	

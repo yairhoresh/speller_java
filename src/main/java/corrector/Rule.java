@@ -14,18 +14,18 @@ public class Rule {
 	private String wrongTextString;
 	private String correctTextString;
 	private String severityString;
-	protected String inhibitorString;
-	private String expensionString;
+	private String inhibitorString;
+	private String expansionString;
 	
-	private List<RuleInstance> ruleIntances = new ArrayList<RuleInstance>();
+	private List<RuleInstance> ruleInstances = new ArrayList<>();
 	
-	Rule(Map<Attribute,String> attributeToWord, String wrongTextString, String correctTextString, String inhibitorString, String expensionString, 
+	Rule(Map<Attribute,String> attributeToWord, String wrongTextString, String correctTextString, String inhibitorString, String expansionString,
 			String severityString, String referenceString) {
 		
 		this.wrongTextString = wrongTextString;
 		this.correctTextString = correctTextString;
 		this.inhibitorString = inhibitorString;
-		this.expensionString = expensionString;
+		this.expansionString = expansionString;
 		this.severityString = severityString;
 		this.referenceString = referenceString;
 		
@@ -45,11 +45,11 @@ public class Rule {
 
 		// stage 1: ignore expansion, build instances
 
-		ruleIntances.add(new RuleInstance(attributeToWord, wrongTextString, correctTextString));
+		ruleInstances.add(new RuleInstance(attributeToWord, wrongTextString, correctTextString));
 		
 		// stage 2: get expansions
 		
-		List<String[]> headAndReplacersList = breakExpansionToHeadAndREplacers();
+		List<String[]> headAndReplacersList = breakExpansionToHeadAndReplacers();
 		
 		// check expansions
 		if (headAndReplacersList == null)
@@ -65,7 +65,7 @@ public class Rule {
 				String modifiedWrongTextString = wrongTextString.replaceAll(head, replacement);
 				String modifiedCorrectTextString = correctTextString.replaceAll(head, replacement);
 				RuleInstance ruleInstance = new RuleInstance(attributeToWord, modifiedWrongTextString, modifiedCorrectTextString);
-				ruleIntances.add(ruleInstance);
+				ruleInstances.add(ruleInstance);
 			}
 			
 		}
@@ -79,7 +79,7 @@ public class Rule {
 		List<Range> matches = new ArrayList<>();
 		
 		// go over the instances
-		for (RuleInstance ruleInstance : ruleIntances) {
+		for (RuleInstance ruleInstance : ruleInstances) {
 			matches.addAll(ruleInstance.getMatches(inputTextInFullWordForm));
 		}
 		
@@ -90,31 +90,31 @@ public class Rule {
 	
 
 
-	private List<String[]> breakExpansionToHeadAndREplacers() {
+	private List<String[]> breakExpansionToHeadAndReplacers() {
 
-		if (expensionString == null || expensionString.isEmpty())
+		if (expansionString == null || expansionString.isEmpty())
 			return null;
 
-		List<String[]> headAndReplacers = new ArrayList<String[]>();
+		List<String[]> headAndReplacers = new ArrayList<>();
 
 		// a comma separates expansion rules
-		String[] expantionRules = expensionString.split(",");
+		String[] expansionRules = expansionString.split(",");
 
-		for (String expantionRule : expantionRules) {
+		for (String expansionRule : expansionRules) {
 
-			expantionRule = expantionRule.trim();
-			int miunsSign = expantionRule.indexOf('-');
+			expansionRule = expansionRule.trim();
+			int miunsSign = expansionRule.indexOf('-');
 			if (miunsSign == -1)
 			{
 				System.out.println("ERROR: minus sign was not found");
 				System.exit(0);
 			}
 
-			String[] replacers = expantionRule.substring(miunsSign + 1).split("[|]");
+			String[] replacers = expansionRule.substring(miunsSign + 1).split("[|]");
 
 			String[] headAndReplacer = new String[replacers.length + 1];
 
-			headAndReplacer[0] = expantionRule.substring(0, miunsSign).trim();
+			headAndReplacer[0] = expansionRule.substring(0, miunsSign).trim();
 
 			for (int j = 1; j <= replacers.length; j++)
 				headAndReplacer[j] = replacers[j - 1].trim();
@@ -134,13 +134,13 @@ public class Rule {
 				+ ((correctTextString == null) ? 0 : correctTextString
 						.hashCode());
 		result = prime * result
-				+ ((expensionString == null) ? 0 : expensionString.hashCode());
+				+ ((expansionString == null) ? 0 : expansionString.hashCode());
 		result = prime * result
 				+ ((inhibitorString == null) ? 0 : inhibitorString.hashCode());
 		result = prime * result
 				+ ((referenceString == null) ? 0 : referenceString.hashCode());
 		result = prime * result
-				+ ((ruleIntances == null) ? 0 : ruleIntances.hashCode());
+				+ ((ruleInstances == null) ? 0 : ruleInstances.hashCode());
 		result = prime * result
 				+ ((severityString == null) ? 0 : severityString.hashCode());
 		result = prime * result
@@ -163,10 +163,10 @@ public class Rule {
 				return false;
 		} else if (!correctTextString.equals(other.correctTextString))
 			return false;
-		if (expensionString == null) {
-			if (other.expensionString != null)
+		if (expansionString == null) {
+			if (other.expansionString != null)
 				return false;
-		} else if (!expensionString.equals(other.expensionString))
+		} else if (!expansionString.equals(other.expansionString))
 			return false;
 		if (inhibitorString == null) {
 			if (other.inhibitorString != null)
@@ -178,10 +178,10 @@ public class Rule {
 				return false;
 		} else if (!referenceString.equals(other.referenceString))
 			return false;
-		if (ruleIntances == null) {
-			if (other.ruleIntances != null)
+		if (ruleInstances == null) {
+			if (other.ruleInstances != null)
 				return false;
-		} else if (!ruleIntances.equals(other.ruleIntances))
+		} else if (!ruleInstances.equals(other.ruleInstances))
 			return false;
 		if (severityString == null) {
 			if (other.severityString != null)
